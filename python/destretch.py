@@ -957,7 +957,7 @@ def destr_control_points(reference, kernel, border_offset, spacing_ratio, mf=0.0
     """
     define_cntl_pts_orig = 0
     
-    destr_info = Destretch_params(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    destr_info = Destretch_params(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     # determine the number of pixels in the kernel
     ksz = kernel.shape
@@ -1346,7 +1346,7 @@ def reg_saved_window(scene, subfield_fftconj, kernel_size, destr_info, rdisp, mm
     # compute control point locations
 
     #start = time()
-    disp = controlpoint_offsets(scene, subfield_fftconj, mm, smou, destr_info, adf2_pad)
+    disp = controlpoint_offsets_fft(scene, subfield_fftconj, mm, smou, destr_info)
    # end = time()
   #  dtime = end - start
  #   print(f"Time for a scene destretch is {dtime:.3f}")
@@ -1449,7 +1449,8 @@ def reg_loop_series(scene, ref, kernel_sizes, mf=0.08, use_fft=False, adf2_pad=0
         smou = smouth(destr_info.kx, destr_info.ky)
         smou_d[kernel1] = smou
 
-        win = doref(ref, mm, destr_info, use_fft)
+        win = doref(ref, mm, destr_info)
+        # win = doref(ref, mm, destr_info, use_fft)
         windows[kernel1] = win
         
     disp_l = list(rdisp.shape)
