@@ -975,6 +975,7 @@ def destr_control_points(reference, kernel, border_offset, spacing_ratio, mf=0.0
     """
     define_cntl_pts_orig = 0
     
+    # TODO review diff (master)
     destr_info = Destretch_params(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 
     # determine the number of pixels in the kernel
@@ -1467,8 +1468,10 @@ def reg_loop_series(scene, ref, kernel_sizes, mf=0.08, use_fft=False, adf2_pad=0
         smou = smouth(destr_info.kx, destr_info.ky)
         smou_d[kernel1] = smou
 
+        # TODO review diff (master)
         win = doref(ref, mm, destr_info)
         # win = doref(ref, mm, destr_info, use_fft)
+        
         windows[kernel1] = win
         
     disp_l = list(rdisp.shape)
@@ -1517,12 +1520,14 @@ def test_destretch(scene, ref, kernel_size, plot=False):
 
 def test_rotation(scene, angle):
     """
-        Test if the code can pick up a static rotation of an image
+    TODO
+    Test if the code can pick up a static rotation of an image
     """
-
-
+    raise NotImplementedError("This function has not been implemented yet")
 
 def test_residual_diff():
     """
-        Test if the code reduces the distortions between the two images
+    TODO
+    Test if the code reduces the distortions between the two images
     """
+    raise NotImplementedError("This function has not been implemented yet")
