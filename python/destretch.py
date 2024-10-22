@@ -54,6 +54,7 @@ class Destretch_params():
         # array of control points
         self.rcps = rcps
 
+        # TODO describe these fields
         self.ref_sz_x = ref_sz_x 
         self.ref_sz_y = ref_sz_y 
         self.scene_sz_x = scene_sz_x 
