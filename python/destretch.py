@@ -110,7 +110,6 @@ def bilin_values_scene(scene, coords_new, destr_info, nearest_neighbor = False):
     -------
     ans: ndarray (nx, ny)
         Bilinear interpolated (resampled) image at the xy locations
-
     """
 
     if nearest_neighbor == True:
@@ -1082,7 +1081,6 @@ def destr_control_points(reference, kernel, border_offset, spacing_ratio, mf=0.0
 
 # ********************  END: destr_control_points  *******************
 
-
 def setup(scene, reference, kernel, destr_info):
 #def setup(scene, ref, kernel, d_info):
 
@@ -1126,7 +1124,8 @@ def setup(scene, reference, kernel, destr_info):
     return
 
 def undo():
-    return
+    """TODO"""
+    raise NotImplementedError("This function has not been implemented yet")
 
 def repair(ref, disp, destr_info):
     """
@@ -1145,8 +1144,9 @@ def repair(ref, disp, destr_info):
     -------
     good : TYPE
         DESCRIPTION.
-
     """
+    # TODO validate unused param (destr_info)
+
     TOOFAR = .5             # user may want to change this parameter
     # TOOFAR = 1.0           # user may want to change this parameter
     # TOOFAR = 1.5           # user may want to change this parameter
@@ -1171,8 +1171,7 @@ def repair(ref, disp, destr_info):
     diff = kps - ref
 
     # list of bad coordinates in this frame
-    bad = np.where((diff[0, :, :]**2 + diff[1, :, :]**2) > limit,
-                   1, 0)
+    bad = np.where((diff[0, :, :]**2 + diff[1, :, :]**2) > limit, 1, 0)
     bad_count = np.sum(bad)
     i = 0
     j = 0
@@ -1227,12 +1226,15 @@ def cps(scene, ref, kernel, adf2_pad=0.25):
     nf = ssz[2]
     ans = np.zeros((2, destr_info.cpx, destr_info.cpy, nf), order="F")
 
-
-
     # compute control point locations
     if destr_info.use_fft:
         for frm in range(0, nf):
-            ans[:, :, :, frm] = controlpoint_offsets_fft(scene[:, :, :, frm], subfield_fftconj, smou, destr_info, adf2_pad)
+            ans[:, :, :, frm] = \
+                controlpoint_offsets_fft(
+                    scene[:, :, :, frm], 
+                    subfield_fftconj, 
+                    smou, destr_info, adf2_pad
+                )
     else:
         for frm in range(0, nf):
             ans[:, :, :, frm] = controlpoint_offsets_adf(scene[:, :, :, frm], subfield_fftconj, smou, destr_info, adf2_pad)
@@ -1244,7 +1246,11 @@ def cps(scene, ref, kernel, adf2_pad=0.25):
 
     return ans
 
-def reg(scene, ref, kernel_size, mf=0.08, use_fft=False, adf_pad=0.25, adf_pow=2, border_offset=4, spacing_ratio=0.5):
+def reg(
+        scene, ref, kernel_size, mf=0.08, 
+        use_fft=False, adf_pad=0.25, adf_pow=2, 
+        border_offset=4, spacing_ratio=0.5
+    ):
 # TODO: clean up control point offset calculations - move FFT specific calls (e.g. apod) into conditional
 # TODO: (here and elsewhere) rename d_info to destr_info
 # TODO: add crosscorrelation choice, other parameters to destr_info; rename destr_info.mf
@@ -1326,7 +1332,10 @@ def reg(scene, ref, kernel_size, mf=0.08, use_fft=False, adf_pad=0.25, adf_pow=2
 
     return ans, disp, rdisp, destr_info
 
-def reg_saved_window(scene, subfield_fftconj, kernel_size, destr_info, rdisp, mm, smou, use_fft=False, adf2_pad=0.25):
+def reg_saved_window(
+        scene, subfield_fftconj, kernel_size, destr_info, rdisp, 
+        mm, smou, use_fft=False, adf2_pad=0.25
+    ):
     """
     Register scenes with respect to ref using kernel size and
     then returns the destretched scene, using precomputed window.
@@ -1358,7 +1367,6 @@ def reg_saved_window(scene, subfield_fftconj, kernel_size, destr_info, rdisp, mm
     #Condition the ref
     #subfield_fftconj = doref(ref, mm, d_info)
 
-
     ssz = scene.shape
     ans = np.zeros((ssz[0], ssz[1]), order="F")
 
@@ -1366,9 +1374,9 @@ def reg_saved_window(scene, subfield_fftconj, kernel_size, destr_info, rdisp, mm
 
     #start = time()
     disp = controlpoint_offsets_fft(scene, subfield_fftconj, mm, smou, destr_info)
-   # end = time()
-  #  dtime = end - start
- #   print(f"Time for a scene destretch is {dtime:.3f}")
+    # end = time()
+    # dtime = end - start
+    # print(f"Time for a scene destretch is {dtime:.3f}")
 
     #disp = repair(rdisp, disp, d_info) # optional repair
     #rms = sqrt(total((rdisp - disp)^2)/n_elements(rdisp))
@@ -1379,9 +1387,6 @@ def reg_saved_window(scene, subfield_fftconj, kernel_size, destr_info, rdisp, mm
     x = doreg(scene, rdisp, disp, destr_info)
     ans = x
         #    win = doref (x, mm); optional update of window
-
-
-
 
     #print(f"Total destr took: {(end - start):.5f} seconds for kernel"
     #      +f"of size {kernel_size} px.")
@@ -1408,7 +1413,6 @@ def reg_loop(scene, ref, kernel_sizes, mf=0.08, use_fft=False, adf2_pad=0.25):
         Parameters of the destretching
     """
 
-
     scene_temp = scene
     start = time()
 
@@ -1421,8 +1425,10 @@ def reg_loop(scene, ref, kernel_sizes, mf=0.08, use_fft=False, adf2_pad=0.25):
 
     return ans, disp, rdisp, destr_info
 
-
-def reg_loop_series(scene, ref, kernel_sizes, mf=0.08, use_fft=False, adf2_pad=0.25, border_offset=4, spacing_ratio=0.5):
+def reg_loop_series(
+        scene, ref, kernel_sizes, mf=0.08, 
+        use_fft=False, adf2_pad=0.25, border_offset=4, spacing_ratio=0.5
+    ):
     """
     Parameters
     ----------
@@ -1471,7 +1477,7 @@ def reg_loop_series(scene, ref, kernel_sizes, mf=0.08, use_fft=False, adf2_pad=0
         # TODO review diff (master)
         win = doref(ref, mm, destr_info)
         # win = doref(ref, mm, destr_info, use_fft)
-        
+
         windows[kernel1] = win
         
     disp_l = list(rdisp.shape)
@@ -1481,14 +1487,10 @@ def reg_loop_series(scene, ref, kernel_sizes, mf=0.08, use_fft=False, adf2_pad=0
 
     for t in range(num_scenes):
         for k in kernel_sizes:
-            scene_d[:, :, t], disp, rdisp, destr_info = reg_saved_window(scene[:, :, t],
-                                                                     windows[k],
-                                                                     k, destr_info_d[k],
-                                                                     rdisp_d[k],
-                                                                     mm_d[k],
-                                                                     smou_d[k],
-                                                                     use_fft,
-                                                                     adf2_pad)
+            scene_d[:, :, t], disp, rdisp, destr_info = (reg_saved_window(
+                scene[:, :, t], windows[k], k, destr_info_d[k],
+                rdisp_d[k], mm_d[k], smou_d[k], use_fft, adf2_pad
+            ))
         disp_all[:, :, :, t] = disp
 
     end = time()
