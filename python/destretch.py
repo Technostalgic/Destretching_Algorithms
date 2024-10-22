@@ -22,27 +22,46 @@ from time import time
 class Destretch_params():
     """
     Class containing all the information about then
-
+    TODO include field descriptors in docstring (if possible?)
     """
-    def __init__(self, kx, ky, wx, wy, bx, by, cpx, cpy, mf, rcps, ref_sz_x, ref_sz_y, 
-                       scene_sz_x, scene_sz_y, subfield_correction, 
-                       max_fit_method, use_fft, do_plots, debug):
-        self.kx = kx    # kernel size x
-        self.ky = ky    # kernel size y
-        self.wx = wx    # border offset in x direction
-        self.wy = wy    # border offset in y direction
-        self.bx = bx    # boundary size in x direction
-        self.by = by    # boundary size in y direction
-        self.cpx = cpx  # number of control points in x direction
-        self.cpy = cpy  # number of control points in y direction
-        self.mf = mf    # apodization percentage
-        self.rcps = rcps    # array of control points
+    def __init__(self, 
+            kx, ky, wx, wy, bx, by, cpx, cpy, mf, rcps, ref_sz_x, ref_sz_y, 
+            scene_sz_x, scene_sz_y, subfield_correction, 
+            max_fit_method, use_fft, do_plots, debug
+        ):
+        """
+        TODO docstring
+        """
+        # kernel size x,y
+        self.kx = kx        
+        self.ky = ky       
+        
+        # border offset x,y
+        self.wx = wx
+        self.wy = wy
+
+        # boundary size x,y
+        self.bx = bx
+        self.by = by
+        
+        # number of control points x,y
+        self.cpx = cpx
+        self.cpy = cpy
+        
+        # apodization percentage
+        self.mf = mf
+
+        # array of control points
+        self.rcps = rcps
+
         self.ref_sz_x = ref_sz_x 
         self.ref_sz_y = ref_sz_y 
         self.scene_sz_x = scene_sz_x 
         self.scene_sz_y = scene_sz_y 
-        self.subfield_correction = subfield_correction  # order of polynomial to
-                                                        # subtract from subfields
+
+        # order of polynomial to subtract from subfields
+        self.subfield_correction = subfield_correction  
+        
         self.max_fit_method = max_fit_method
         self.use_fft = use_fft
         self.do_plots = do_plots
@@ -129,8 +148,7 @@ def bilin_values_scene(scene, coords_new, destr_info, nearest_neighbor = False):
 
     return scene_interp
 
-def bilin_control_points(scene, rdisp, disp,
-                         test=False):
+def bilin_control_points(scene, rdisp, disp, test=False):
     """
     Compute the coordinates of the pixels in the output images to be
     sampled from the input image (using Scipy.interpolate.RectBivariate).
@@ -222,6 +240,8 @@ def bspline(scene, r, dd, destr_info):
         Destretched image
 
     """
+    # TODO validate unused parameters and calculations in this function
+    # TODO (destr_info, ns, nt)
 
     always = 1      # exterior control points drift with interior (best)
     #always = 0     ; exterior control points fixed by ref. displacements
@@ -321,7 +341,6 @@ def patch(compx, compy, s, t):
     ans[:, :, 1] = np.matmul(np.matmul(ss, compy), tt)
 
     return ans
-
 
 def extend(cntrlpts_ref, cntrlpts_actl, num_extend_pts=3):
     """Extend map of measured control points and displacements.
@@ -438,7 +457,6 @@ def extend(cntrlpts_ref, cntrlpts_actl, num_extend_pts=3):
 
     return cntrlpts_ref_extnd, cntrlpts_actl_extnd
 
-
 def apod_mask(nx, ny, fraction=0.08):
     """
     Create an apodization mask over the apertures
@@ -456,8 +474,8 @@ def apod_mask(nx, ny, fraction=0.08):
     Returns
     -------
     Apodization window (NumPy array)
-
     """
+
     taper_wx = int(nx * min(fraction, 0.5))
     taper_wy = int(ny * min(fraction, 0.5))
 
@@ -525,7 +543,6 @@ def smouth(nx, ny):
 
     return mm
 
-
 def surface_fit(points_array, order=0):
     """
     Fit a polynomial surface to a 2-D array of values.
@@ -583,7 +600,6 @@ def surface_fit(points_array, order=0):
         surface_array = np.polynomial.polynomial.polyval2d(x, y, fit_coeffs)
         
         return surface_array
-
 
 def doref(ref_image, apod_mask, destr_info):
     """
@@ -651,7 +667,9 @@ def doref(ref_image, apod_mask, destr_info):
     return subfields_fftconj
 
 def crosscor_maxpos(cc, order=1):
-
+    """
+    TODO docstring
+    """
     mx  = np.amax(cc)
     loc = cc.argmax()
 
@@ -753,7 +771,6 @@ def controlpoint_offsets_fft(scene, subfield_fftconj, apod_mask, lowpass_filter,
 
     return subfield_offsets
 
-
 # **********************************************************
 # ******************** FUNCTION: controlpoint_offsets_adf  *******************
 # **********************************************************
@@ -835,8 +852,10 @@ def controlpoint_offsets_adf(scene, reference, destr_info, adf_pad=0.25, adf_pow
     return subfield_offsets
 
 def val(scene, ref, kernel):
-     # check parameters are reasonable
-
+     """
+     TODO docstring
+     """
+     # TODO check parameters are reasonable
      # scene, ref, kernel: as defined by 'reg'
 
      ssz = scene.shape
@@ -866,8 +885,6 @@ def val(scene, ref, kernel):
 
 def doreg(scene, r, d, destr_info):
     """
-
-
     Parameters
     ----------
     scene : TYPE
@@ -893,6 +910,7 @@ def doreg(scene, r, d, destr_info):
 
 def measure_destr_properties(scene1, scene2, destr_info):
     """
+    TODO
     Measure the suitable parameters for the destretch based on the two provided
     images based on:
         1)Fourier transforms of the images to obtain the smallest
@@ -910,20 +928,21 @@ def measure_destr_properties(scene1, scene2, destr_info):
         -- destr_info -- Destretch_class
             Suggested properties of the destretch
     """
-
-
-    return destr_info
+    raise NotImplementedError("This function has not been implemented yet")
 
 def mkcps_nonuniform(ref, kernel):
-
-    return 0
+    """
+    TODO
+    """
+    raise NotImplementedError("This function has not been implemented yet")
 
 def mkcps_overlapping(ref, kernel, box_size):
     """
+    TODO
     Create control point locations in the reference with overlapping cross
     correlation regions
     """
-    return destr_info, rcps
+    raise NotImplementedError("This function has not been implemented yet")
 
 # *************************************************************************
 # ********************  FUNCTION: destr_control_points  *******************
