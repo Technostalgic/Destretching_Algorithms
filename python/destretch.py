@@ -75,6 +75,7 @@ class Destretch_params():
 
 def plot_cps(ax_object, destr_info):
     """
+    TODO
     Plot the control points for the destretching on the destretched
     image
 
@@ -88,7 +89,7 @@ def plot_cps(ax_object, destr_info):
     Returns
     -------
     """
-    return 0
+    raise NotImplementedError("This function has not been implemented yet")
 
 def bilin_values_scene(scene, coords_new, destr_info, nearest_neighbor = False):
     """
@@ -169,7 +170,6 @@ def bilin_control_points(scene, rdisp, disp, test=False):
     -------
     xy_grid : ndarray (2, nx, ny)
         Coordinates of the input image to be sampled for the output image
-
     """
 
     scene_nx = scene.shape[0]
@@ -239,7 +239,6 @@ def bspline(scene, r, dd, destr_info):
     -------
     ans : TYPE
         Destretched image
-
     """
     # TODO validate unused parameters and calculations in this function
     # TODO (destr_info, ns, nt)
@@ -363,7 +362,6 @@ def extend(cntrlpts_ref, cntrlpts_actl, num_extend_pts=3):
         reference control points, extended by the appropriate border
     cntrlpts_actl_extnd : TYPE
         actual displaced position of control points, also extended
-
     """
     # if true, the extended border of the actual displacements will be filled
     #     with the same displacement values as at the corresponding edge.
