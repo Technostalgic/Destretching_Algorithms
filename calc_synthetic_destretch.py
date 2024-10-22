@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from destretch import *
+from python.destretch import *
 import time
 import tqdm
 import matplotlib.pyplot as plt
