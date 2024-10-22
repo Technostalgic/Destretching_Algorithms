@@ -1393,7 +1393,6 @@ def reg_saved_window(
 
     return ans, disp, rdisp, destr_info
 
-
 def reg_loop(scene, ref, kernel_sizes, mf=0.08, use_fft=False, adf2_pad=0.25):
     """
     Parameters
