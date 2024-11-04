@@ -996,6 +996,7 @@ def destr_control_points(reference, kernel, border_offset, spacing_ratio, mf=0.0
     if (destr_info.wy % 2):
         destr_info.wy = int(destr_info.wy + 1)
     
+    # TODO review; used as order param in crosscor_maxpos()
     destr_info.max_fit_method = 2
 
     # [wx,wy] define the size of a border around the edge of the image, to add an additional 
