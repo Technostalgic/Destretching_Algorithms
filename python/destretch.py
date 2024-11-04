@@ -995,6 +995,8 @@ def destr_control_points(reference, kernel, border_offset, spacing_ratio, mf=0.0
         destr_info.wx = int(destr_info.wx + 1)
     if (destr_info.wy % 2):
         destr_info.wy = int(destr_info.wy + 1)
+    
+    destr_info.max_fit_method = 2
 
     # [wx,wy] define the size of a border around the edge of the image, to add an additional 
     #     buffer area in which to avoid placing the control points.
