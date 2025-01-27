@@ -123,7 +123,7 @@ def bilin_values_scene(scene, coords_new, destr_info, nearest_neighbor=False):
         #scene  = np.array(selector_events, order="F").astype(np.float32)
         #scene_float = scene.astype(np.float32)
         scene_float = scene
-        print(scene_float.shape, scene_float.dtype)
+        #print(scene_float.shape, scene_float.dtype)
         #scene_float = scene.copy
 
         ss00 = scene_float[x0, y0]
@@ -921,13 +921,13 @@ def doreg(scene, r, d, destr_info):
     """
 
     xy, xy_offsets  = bilin_control_points(scene, r, d)
+    # this was some old code for juggling the axes to match the inputs for bilin_values_scene
+    # sorted out the axes in the other procedures so this should no longer be necessary
     #xy = xy[[1,0],:,:]
-    #xy_swap = np.swapaxes(xy, 1, 2)
-    xy_swap = xy
+    #xy = np.swapaxes(xy, 1, 2)
+    #scene = np.swapaxes(copy.deepcopy(scene), 0, 1)
 
-    #scene_swap = np.swapaxes(copy.deepcopy(scene), 0, 1)
-    scene_swap = scene
-    ans = bilin_values_scene(scene_swap, xy_swap, destr_info, nearest_neighbor=False)
+    ans = bilin_values_scene(scene, xy, destr_info, nearest_neighbor=False)
 
     return ans
     #return scene
@@ -1308,6 +1308,8 @@ def destretch(scene, ref, kernel_size, mf=0.08, use_fft=False, adf_pad=0.25, adf
         Reference control point locations
 
     """
+    do_timing = 0
+
     scene -= scene.mean()
     ref -= ref.mean()
     kernel = np.zeros((kernel_size, kernel_size))
@@ -1326,7 +1328,7 @@ def destretch(scene, ref, kernel_size, mf=0.08, use_fft=False, adf_pad=0.25, adf
     ssz = scene.shape
     ans = np.zeros((ssz[0], ssz[1]), order="F")
 
-    #start = time()
+    if do_timing: start = time()
 
     if use_fft:
         subfield_fftconj, subfields_images = doref(ref, apod_window, destr_info)
@@ -1334,9 +1336,10 @@ def destretch(scene, ref, kernel_size, mf=0.08, use_fft=False, adf_pad=0.25, adf
         disp = controlpoint_offsets_fft(scene, subfield_fftconj, apod_window, smou, destr_info)
     else:
         disp = controlpoint_offsets_adf(scene, ref, destr_info, adf_pad, adf_pow)
-    #end = time()
-    #dtime = end - start
-    #print(f"Time for a scene destretch is {dtime:.3f}")
+    
+    if do_timing: 
+        dtime = time() - start
+        print(f"Time for a scene destretch is {dtime:.3f}")
 
     #disp = repair(rdisp, disp, d_info) # optional repair
     #rms = sqrt(total((rdisp - disp)^2)/n_elements(rdisp))
